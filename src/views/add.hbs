@@ -1,0 +1,41 @@
+ <aside>
+    <h3>WPR</h3>
+    <header>
+        <h2>HTML Quiz</h2>
+    </header>
+    
+    <ul>
+        <li><a href="/"><i class="far fa-question-circle"></i> All questions</a></li>
+        <li><a class="active" href="/add"><i class="far fa-plus"></i> New question</a></li>
+    </ul>
+</aside>
+<main>
+    <div class="container">
+        <h1>New question</h1>
+        <form id="frm-create" action="/add-question" method="post">
+            <div class="form-group">
+                <label for="text">Text</label>
+                <input type="text" name="text" placeholder="Enter your questions..." required/>
+            </div>
+            
+            <div class="form-group" id="form-answer">
+                <label>Answers: </label>
+                <div class="part-answers">
+                    <div class="answer" id="answer-0">
+                        <input type="text" name="answers" placeholder="Enter the answer..." required/>
+                        <input name="correctAnswer" type="radio" value="0" id="answer0" required/> <label for="answer0">correct</label>
+                        <button type="button" class="btn btn-orange btn-remove" onclick="removeAnswer(this)">
+                        <i class="fas fa-times"></i> Remove</button>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <button id="btn-add" type="button" class="btn btn-blue"  onclick="addQuestion();">
+                    <i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
+            <div class="actions">
+                <button type="submit" class="btn btn-blue btn-large btn-save" onclick="submitQuestion(this);"><i class="fas fa-save"></i> Save</button>
+            </div>
+        </form>
+    </div>
+</main>

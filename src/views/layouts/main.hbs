@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="app">
+        {{{body}}}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+    var btnAdd = document.querySelector('#btn-add');
+    var partAnswers = document.querySelector('.part-answers');
+    var btnRemove = document.querySelectorAll('.btn-remove');
+    var btnSave = document.querySelector('.btn-save');
+    var formCreateQues = document.querySelector('#frm-create');
+
+    // them cau hoi moi
+    function addQuestion(){
+        let answers = document.querySelectorAll('.answer');
+        let answerChild = document.createElement('div');
+        let inputText = document.createElement('input');
+        let inputRadio = document.createElement('input');
+        let label = document.createElement('label');
+        let btnRm = document.createElement('button');
+        let i = document.createElement('i');
+        setAttributes(answerChild, {class:'answer',id:`answer-${answers.length}`});
+        setAttributes(inputText,{type:'text',name:'answers',placeholder:'Enter the answer...',required:''});
+        setAttributes(inputRadio,{type:'radio',name:'correctAnswer',value:`${answers.length}`,id:`answer${answers.length}`,required:''});
+        setAttributes(label,{for:`answer${answers.length}`});
+        label.innerHTML = 'correct';
+        setAttributes(btnRm,{type:'button',class:'btn',onclick:'removeAnswer(this)'});
+        btnRm.classList.add('btn-orange');
+        btnRm.classList.add('btn-remove');
+        setAttributes(i,{class:'fas'});
+        i.classList.add('fa-times');
+        btnRm.appendChild(i);
+        btnRm.innerHTML = 'Remove';
+        answerChild.appendChild(inputText);
+        answerChild.appendChild(inputRadio);
+        answerChild.appendChild(label);
+        answerChild.appendChild(btnRm);
+        partAnswers.appendChild(answerChild);
+    }
+    
+    function removeAnswer(btn){
+        // xóa phần tử đã chọn và cập nhật lại số phần tử sau khi xóa
+        btn.parentElement.remove(btn);
+        updateAnswers();
+    }
+
+    function updateAnswers(){
+        let answers = document.querySelectorAll('.answer');     
+        let output = '';
+        let inputArr = document.getElementsByName('answers');
+        const valuesInput = [];
+        inputArr.forEach((input)=>{
+            valuesInput.push(input.value);
+        })
+
+        // add vào output số câu trả lời hiện tại
+        answers.forEach((answer,index) => {
+            output+= `<div class="answer" id="answer-${index}">
+                        <input type="text" name="answers" value="${valuesInput[index]}" required/>
+                        <input name="correctAnswer" type="radio" value="${index}" id="answer${index}" required/> <label for="answer1">correct</label>
+                        <button type="button" class="btn btn-orange btn-remove" onclick="removeAnswer(this);"><i class="fas fa-times"></i> Remove</button>
+                    </div>`
+        });
+        partAnswers.innerHTML = output;
+    }
+
+    function submitQuestion(){
+        let answers = document.querySelectorAll('.answer');
+        if(answers.length <= 1){
+            alert('Số câu trả lời của bạn chưa đủ! Vui lòng tạo thêm câu hỏi ');
+        }
+    }
+
+    function setAttributes(el, attrs) {
+        for(var key in attrs) {
+            el.setAttribute(key, attrs[key]);
+        }
+    }
+</script>
+</body>
+</html>

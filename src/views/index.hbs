@@ -1,0 +1,160 @@
+<aside>
+    <h3>WPR</h3>
+    <header>
+        <h2>HTML Quiz</h2>
+    </header>
+    
+    <ul>
+        <li><a class="active" href="/"><i class="far fa-question-circle"></i> All questions</a></li>
+        <li><a href="/add"><i class="far fa-plus"></i> New question</a></li>
+    </ul>
+</aside>
+<main>
+    <div class="container">
+        <h1>All questions</h1>
+        <div id="search">
+            <input type="text" placeholder="Search..." id="searchBar" onkeyup="searchQuestion(this)"/>
+        </div>
+        {{!-- <table style="display: none;">
+            <tr>
+                <th>#</th>
+                <th>Question</th>
+                <th>Answer</th>
+                <th width="210">Actions</th>
+            </tr>
+            
+            <div id="questions-list">
+                {{#each questions}}
+                <tr class="question-row" name="{{this.text}}">
+                    <td>{{sum @index 1}}</td>
+                    <td>{{this.text}}</td>
+                    <td>{{answer this.answers this.correctAnswer}}</td>
+                    <td>
+                        <a href="/edit" class="btn btn-blue"><i class="far fa-edit"></i> Edit</a>
+                        <button type="button" name="{{this._id}}" class="btn btn-orange btn-delete" onclick="deleteQuestion(this);"><i class="far fa-trash-alt"></i> Delete</button>
+                    </td>
+                </tr>
+                {{/each}}
+            </div>
+        </table> --}}
+    </div>
+</main>
+{{!-- form de gui method delete --}}
+<form class="form-delete" method="POST" name="delete-product-form"></form>
+<script>
+
+    // delete question
+    var deleteForm = document.forms['delete-product-form'];
+    function deleteQuestion(btn) {
+        deleteForm.action = '/question/' + btn.name + '/delete?_method=DELETE';
+        deleteForm.submit();
+           
+    }
+    // search question theo ten
+    const questionsList = document.getElementById('questions-list');
+    const searchBar = document.getElementById('searchBar');
+    let hpQuestions = [];
+
+    // lang nghe event keyup
+    function searchQuestion(e){
+        const searchString = e.value.toLowerCase();
+        const filteredQuestions = hpQuestions.filter((question) => {
+            return (
+                question.text.toLowerCase().includes(searchString)
+            );
+        });
+        displayQuestions(filteredQuestions);
+    }
+
+    // fetch api questions
+    const loadQuestions = async () =>{
+        try {
+            const res = await fetch('http://localhost:3000/api-questions');
+            hpQuestions = await res.json();
+            displayQuestions(hpQuestions);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // show questions duoc search
+    function displayQuestions(questions){
+        // kiem tra neu co table truoc do thi xoa di
+        let currentTable = document.querySelector('.table-questions');
+        if(currentTable){
+            currentTable.remove();
+        }
+
+        let container = document.querySelector('.container');
+        let table = document.createElement('table');
+        let tr0 = document.createElement('tr');
+        for(var i=0;i<4;i++){
+            var th = document.createElement('th');
+            if(i==0){
+                th.innerText ='#';
+            }
+            if(i==1){
+                th.innerText = 'Question';
+            }
+            if(i==2){
+                th.innerText = 'Answer';
+            }
+            if(i==3){
+                th.innerText = 'Actions';
+                th.setAttribute('width','210');
+            }
+            tr0.appendChild(th);
+        }
+        table.appendChild(tr0);
+        table.classList.add('table-questions');
+        questions.forEach((question,index)=>{
+            var tr = document.createElement('tr');
+            tr.classList.add('question-row');
+            tr.setAttribute('name',question.text);
+            for(var i=0;i<4;i++){
+                var td = document.createElement('td');
+                if(i==0){
+                    td.innerText = `${index+1}`;
+                }
+                if(i==1){
+                    td.innerText = question.text;
+                }
+                if(i==2){
+                    td.innerText = question.answers[question.correctAnswer];
+                }
+                if(i==3){
+                    let a = document.createElement('a');
+                    let i1 = document.createElement('i');
+                    let i2 = document.createElement('i');
+                    let btn = document.createElement('button');
+                    
+                    i1.classList.add('far');
+                    i1.classList.add('fa-edit');
+                    a.classList.add('btn');
+                    a.classList.add('btn-blue');
+                    a.href = `/edit/${question._id}`;
+                    a.appendChild(i1);
+                    a.innerText = "Edit";
+                    btn.type = "button";
+                    btn.setAttribute("name", question._id);
+                    btn.setAttribute("onclick", `deleteQuestion(this)`)
+                    btn.classList.add("btn");
+                    btn.classList.add("btn-orange");
+                    btn.classList.add("btn-delete");
+                    i2.classList.add('far');
+                    i2.classList.add('fa-trash-alt');
+                    btn.appendChild(i2);
+                    btn.innerText = "Delete";
+                    td.appendChild(a);
+                    td.appendChild(btn);
+                }
+                tr.appendChild(td);
+            }
+            table.appendChild(tr);
+        })
+        container.appendChild(table);
+    };
+
+    loadQuestions();
+    
+</script>
